@@ -5,10 +5,10 @@ import java.util.Date
 
 // Header of the response
 data class Meta(
-    @field:Json(name = "result_count") val result_count: Int,
-    @field:Json(name = "oldest_id") val oldest_id: Long,
-    @field:Json(name = "newest_id") val newest_id: Long,
-    @field:Json(name = "next_token") val next_token: String,
+    @field:Json(name = "result_count") val result_count: Int?,
+    @field:Json(name = "oldest_id") val oldest_id: Long?,
+    @field:Json(name = "newest_id") val newest_id: Long?,
+    @field:Json(name = "next_token") val next_token: String?,
 )
 
 data class TweetResponse(

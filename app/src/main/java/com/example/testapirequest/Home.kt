@@ -39,20 +39,18 @@ class Home : Fragment() {
 
         var navController : NavController = findNavController()
         binding.button.setOnClickListener {
-            var UserId: Long = -1;
-            try {
-                UserId = binding.InputUserID.text.toString().toLong()
-            } catch(_: Exception) {}
-            if (UserId <= 0) {
-                val AlertBuilder = AlertDialog.Builder(context)
-                AlertBuilder.setTitle("Identifiant invalide !")
-                AlertBuilder.setMessage("L'identifiant donnée n'est pas valide.")
-                AlertBuilder.setNeutralButton("Ok", DialogInterface.OnClickListener { dialogInterface, i ->  })
+            var Username: String = binding.InputUserID.text.toString()
 
-                AlertBuilder.show()
+            if (Username.equals("")) {
+                val alertBuilder = AlertDialog.Builder(context)
+                alertBuilder.setTitle("Identifiant invalide !")
+                alertBuilder.setMessage("L'identifiant donnée n'est pas valide.")
+                alertBuilder.setNeutralButton("Ok", DialogInterface.OnClickListener { _, _ ->  })
+
+                alertBuilder.show()
                 return@setOnClickListener
             };
-            GlobalFenv.CurrentUserId = UserId
+            GlobalFenv.CurrentUsername = Username
             navController.navigate(R.id.action_Home_To_TweetList)
         }
 

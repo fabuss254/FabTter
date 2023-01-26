@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/HomeFragment">
+
+    <fragment
+        android:id="@+id/HomeFragment"
+        android:name="com.example.testapirequest.Home"
+        android:label="Home"
+        tools:layout="@layout/home">
+
+        <action
+            android:id="@+id/action_Home_To_TweetList"
+            app:destination="@id/TweetList" />
+    </fragment>
+    <fragment
+        android:id="@+id/TweetList"
+        android:name="com.example.testapirequest.TweetList"
+        android:label="Liste de tweets"
+        tools:layout="@layout/tweetlist">
+
+        <action
+            android:id="@+id/action_TweetList_To_Home"
+            app:destination="@id/HomeFragment" />
+    </fragment>
+</navigation>

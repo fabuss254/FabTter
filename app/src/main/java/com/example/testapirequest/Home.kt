@@ -1,8 +1,10 @@
 package com.example.testapirequest
 
 import android.app.AlertDialog
+import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
+import android.text.Editable
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -37,6 +39,9 @@ class Home : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val prefs = requireActivity().getPreferences(Context.MODE_PRIVATE)
+        binding.InputUserID.setText((prefs.getString("lastUsername", "")))
+
         var navController : NavController = findNavController()
         binding.button.setOnClickListener {
             var Username: String = binding.InputUserID.text.toString()
@@ -50,7 +55,10 @@ class Home : Fragment() {
                 alertBuilder.show()
                 return@setOnClickListener
             };
+
             GlobalFenv.CurrentUsername = Username
+            prefs.edit().putString("lastUsername", Username).apply()
+
             navController.navigate(R.id.action_Home_To_TweetList)
         }
 

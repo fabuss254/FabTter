@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import androidx.constraintlayout.motion.widget.Debug
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.example.testapirequest.HTTP.*
 import com.example.testapirequest.HTTP.Model.*
 import com.example.testapirequest.databinding.TweetlistBinding
@@ -61,8 +62,10 @@ class TweetList : Fragment() {
                 alertBuilder.setMessage(String.format("L'utilisateur %s n'as pas était trouvé(e).", GlobalFenv.CurrentUsername))
                 alertBuilder.setNeutralButton("Ok", DialogInterface.OnClickListener { _, _ ->  })
 
-                alertBuilder.show()
-                findNavController().navigate(R.id.action_TweetList_To_Home)
+                withContext(Dispatchers.Main) {
+                    alertBuilder.show()
+                    findNavController().navigate(R.id.action_TweetList_To_Home)
+                }
                 return@launch
             }
 
@@ -74,7 +77,9 @@ class TweetList : Fragment() {
             var tweetData: TweetResponse? = TweetResponse(emptyList<Tweet>(), Meta(0, 0, 0, "None"))
             try {
                 tweetData = HTTPService().getTwitterService().listTweets(id).execute().body()
-            }catch(_: Exception) {}
+            }catch(e: Exception) {
+                Log.v("TweetList", e.message ?: "Unknown")
+            }
 
             if (tweetData == null) {
                 val alertBuilder = AlertDialog.Builder(context)
@@ -82,8 +87,10 @@ class TweetList : Fragment() {
                 alertBuilder.setMessage(String.format("Erreur durant la récuperation des tweets de %s.", GlobalFenv.CurrentUsername))
                 alertBuilder.setNeutralButton("Ok", DialogInterface.OnClickListener { _, _ ->  })
 
-                alertBuilder.show()
-                findNavController().navigate(R.id.action_TweetList_To_Home)
+                withContext(Dispatchers.Main) {
+                    alertBuilder.show()
+                    findNavController().navigate(R.id.action_TweetList_To_Home)
+                }
                 return@launch
             }
 

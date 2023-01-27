@@ -2,24 +2,19 @@ package com.example.testapirequest
 
 import android.app.AlertDialog
 import android.content.DialogInterface
-import android.opengl.Visibility
 import android.os.Bundle
 import android.util.Log
-import android.view.KeyEvent.DispatcherState
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.constraintlayout.motion.widget.Debug
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.example.testapirequest.HTTP.*
 import com.example.testapirequest.HTTP.Model.*
 import com.example.testapirequest.databinding.TweetlistBinding
 import kotlinx.coroutines.*
 import retrofit2.Call
-import retrofit2.Response
 
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
@@ -49,14 +44,18 @@ class TweetList : Fragment() {
         tweetSet.clear()
         adapter.notifyDataSetChanged()
 
-        binding.progressBar.visibility = View.VISIBLE
+        val progressBar = binding.progressBar
+        progressBar.visibility = View.VISIBLE
         GlobalScope.launch(Dispatchers.IO) {
             // First step: Retrieve user's id from their username
             val l: Call<UserResponse?> =
                 HTTPService().getTwitterService().getUserFromUsername(GlobalFenv.CurrentUsername)
-            val userData: UserResponse? = (l.execute()).body()
-            val id: String = userData?.data?.id ?: "";
-            if (userData == null){
+            var userData: UserResponse = UserResponse(UserResponseData("-1", "Unknown", "Unknown"))
+            try {
+                userData = (l.execute()).body()!!
+            } catch (_: Exception) {}
+
+            if (userData.data.id == "-1"){
                 val alertBuilder = AlertDialog.Builder(context)
                 alertBuilder.setTitle("une erreur est survenue.")
                 alertBuilder.setMessage(String.format("L'utilisateur %s n'as pas était trouvé(e).", GlobalFenv.CurrentUsername))
@@ -68,6 +67,8 @@ class TweetList : Fragment() {
                 }
                 return@launch
             }
+
+            val id: String = userData.data.id;
 
             // Second step: Retrieve user's tweet list from their UserId
             Log.v("TweetList", ("User %s has been found: %s").format(GlobalFenv.CurrentUsername, id))
@@ -95,7 +96,7 @@ class TweetList : Fragment() {
             }
 
             withContext(Dispatchers.Main) {
-                binding.progressBar.visibility = View.GONE
+                progressBar.visibility = View.INVISIBLE
 
                 for (tweet in tweetData.data) {
                     tweetSet.add(tweet);
